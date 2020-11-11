@@ -1,24 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import OptionsContext from "./context/options-context";
+import Header from "./components/Header";
+import AddOptionForm from "./components/AddOptionForm";
+import ListOfOptions from "./components/ListOfOptions";
+import PickOption from "./components/PickOption";
 
 function App() {
+  const [options, setOptions] = useState([]);
+  useEffect(() => {
+    const dataStorage = JSON.parse(localStorage.getItem("options"));
+    if (dataStorage) {
+      setOptions(dataStorage);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("options", JSON.stringify(options));
+  }, [options]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <OptionsContext.Provider value={{ options, setOptions }} className="App">
+      <Header />
+      <div className="container">
+        <PickOption />
+        <div className="widget">
+          <ListOfOptions />
+          <AddOptionForm />
+        </div>
+      </div>
+    </OptionsContext.Provider>
   );
 }
 
